@@ -12,16 +12,25 @@ version '1.0.0'
 
 repositories {
     mavenCentral()
+    maven {
+        url  "https://packages.confluent.io/maven/"
+    }
 }
 
 sourceCompatibility = 11
 targetCompatibility = 11
 
-
 dependencies {
+
+    implementation group: 'io.confluent', name: 'kafka-avro-serializer', version: "5.4.1"
     implementation group: 'com.typesafe.akka', name: 'akka-stream-kafka_2.13', version: '2.0.7'
     implementation group: 'com.typesafe.akka', name: 'akka-stream_2.13', version: '2.6.14'
     implementation group: 'com.typesafe.akka', name: 'akka-slf4j_2.13', version: '2.6.14'
+    implementation group: 'com.typesafe.akka', name: 'akka-http-core_2.13', version: '10.2.4'
+
+    implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.12.0'
+    implementation group: 'tech.allegro.schema.json2avro', name: 'converter', version: '0.2.10'
+
     implementation "ch.qos.logback:logback-classic:1.2.3"
     implementation 'org.projectlombok:lombok:1.18.20'
     annotationProcessor 'org.projectlombok:lombok:1.18.20'
@@ -43,7 +52,7 @@ jib {
 
 jar {
     manifest {
-        attributes 'Main-Class': 'aki.KafkaDlqMonitor'
+        attributes 'Main-Class': 'li.akermann.KafkaRambler'
     }
 
     duplicatesStrategy = DuplicatesStrategy.INCLUDE
@@ -53,7 +62,6 @@ jar {
     }
 
 }
-
 
 shadowJar {
     transform(AppendingTransformer) {

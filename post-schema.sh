@@ -1,0 +1,2 @@
+curl -X POST  -H "Content-Type: application/json"  -d "{\"schema\": $(jq tostring avro.avsc)}"  http://localhost:8081/subjects/test-key/versions
+curl -X POST  -H "Content-Type: application/json"  -d "{\"schema\": $(jq tostring avro.avsc)}"  http://localhost:8081/subjects/test-value/versions

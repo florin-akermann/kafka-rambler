@@ -1,8 +1,8 @@
 ### Kafka-Rambler
 
-###'rambling'
+### 'rambling'
 
-####/ˈramblɪŋ/
+#### /ˈramblɪŋ/
 adjective
 
 1. (of writing or speech) lengthy and confused or inconsequential.

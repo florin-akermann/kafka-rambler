@@ -12,30 +12,25 @@ import java.util.Optional;
 
 import static io.confluent.kafka.serializers.AbstractKafkaAvroSerDeConfig.SCHEMA_REGISTRY_URL_CONFIG;
 
-public class AvroRambler implements SchemaRambler<Object> {
-
-    private final Config config;
-
-    public AvroRambler(Config config) {
-        this.config = config;
-    }
+public record AvroRambler(Config config) implements SchemaRambler<Object> {
 
     @Override
-    public Optional<SchemaProps<Object>> mapSchemaToProps(String s, boolean isKey) {
+    public Optional<SchemaProps<Object>> mapSchemaToProps(String schemaString, boolean isKey) {
         try {
-            var schema = new Schema.Parser().parse(s);
-            var changeMe = new RandomData(schema, 1).iterator().next();
+            var schema = new Schema.Parser().parse(schemaString);
             var serializer = new KafkaAvroSerializer();
             serializer.configure(
                     Map.<String, Object>of(SCHEMA_REGISTRY_URL_CONFIG, config.getString(SCHEMA_REGISTRY_URL_CONFIG)),
                     isKey
             );
-            var props = SchemaProps.builder()
-                    .schemaString(s)
-                    .serializer(serializer)
-                    .randomGenerator(new RandomAvroData(config, schema))
-                    .build();
-            return Optional.of(props);
+
+            var schemaProps = new SchemaProps<>(
+                    schemaString,
+                    serializer,
+                    new RandomAvroData(config, schema)
+            );
+
+            return Optional.of(schemaProps);
         } catch (Exception e) {
             return Optional.empty();
         }

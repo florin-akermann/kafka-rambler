@@ -7,7 +7,6 @@ import org.apache.kafka.common.serialization.StringSerializer;
 
 import java.util.Optional;
 import java.util.Random;
-import java.util.concurrent.ThreadLocalRandom;
 
 public class DefaultRambler implements SchemaRambler<Object> {
 
@@ -26,10 +25,11 @@ public class DefaultRambler implements SchemaRambler<Object> {
     }
 
     private SchemaProps<?> defaultProps() {
-        return SchemaProps.<String>builder()
-                .randomGenerator(this::getRandomString) //Add random String
-                .serializer(new StringSerializer())
-                .build();
+        return new SchemaProps<>(
+                null,
+                new StringSerializer(),
+                this::getRandomString
+        );
     }
 
     private String getRandomString() {
@@ -45,6 +45,5 @@ public class DefaultRambler implements SchemaRambler<Object> {
         } else {
             return new Random();
         }
-
     }
 }

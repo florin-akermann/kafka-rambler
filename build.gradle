@@ -3,7 +3,7 @@ import com.github.jengelman.gradle.plugins.shadow.transformers.AppendingTransfor
 plugins {
     id 'java'
     id 'com.google.cloud.tools.jib' version '3.0.0'
-    id "com.github.johnrengelman.shadow" version "5.0.0"
+    id "com.github.johnrengelman.shadow" version "7.0.0"
 }
 
 
@@ -17,8 +17,8 @@ repositories {
     }
 }
 
-sourceCompatibility = 11
-targetCompatibility = 11
+sourceCompatibility = 16
+targetCompatibility = 16
 
 dependencies {
 
@@ -40,7 +40,7 @@ dependencies {
 
 jib {
     from {
-        image = 'adoptopenjdk/openjdk11'
+        image = 'adoptopenjdk/openjdk16'
     }
     to {
         image = project.name

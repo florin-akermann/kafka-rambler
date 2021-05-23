@@ -13,27 +13,16 @@ import org.apache.kafka.clients.producer.ProducerRecord;
 import java.util.concurrent.CompletionStage;
 
 @Slf4j
-public class StreamRunner<K, V> {
+public record StreamRunner<K, V>(SchemaProps<K> keySchemaProps, SchemaProps<V> valSchemaProps, Config config) {
 
-
-    private final SchemaProps<K> keySchemaProps;
-    private final SchemaProps<V> valSchemaProps;
-    private final Config config;
-
-    public StreamRunner(SchemaProps<K> keySchemaProps, SchemaProps<V> valSchemaProps, Config config) {
-        this.keySchemaProps = keySchemaProps;
-        this.valSchemaProps = valSchemaProps;
-        this.config = config;
-    }
-
-    CompletionStage<Done> run(ActorSystem system) {
+    public CompletionStage<Done> run(ActorSystem system) {
         return Source.repeat(1)
                 .map(e -> toRandomProducerRecord())
                 .throttle(config.getInt("ramble.elements"), config.getDuration("ramble.duration"))
                 .toMat(Producer.plainSink(ProducerSettings.create(
                         config.getConfig("akka.kafka.producer"),
-                        keySchemaProps.getSerializer(),
-                        valSchemaProps.getSerializer()
+                        keySchemaProps.serializer(),
+                        valSchemaProps.serializer()
                 )), Keep.right())
                 .run(system);
     }
@@ -41,8 +30,8 @@ public class StreamRunner<K, V> {
     private ProducerRecord<K, V> toRandomProducerRecord() {
         return new ProducerRecord<>(
                 config.getString("topic.target"),
-                keySchemaProps.getRandomGenerator().next(),
-                valSchemaProps.getRandomGenerator().next()
+                keySchemaProps.randomGenerator().next(),
+                valSchemaProps.randomGenerator().next()
         );
     }
 }

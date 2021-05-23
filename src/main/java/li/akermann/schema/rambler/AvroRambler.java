@@ -12,7 +12,13 @@ import java.util.Optional;
 
 import static io.confluent.kafka.serializers.AbstractKafkaAvroSerDeConfig.SCHEMA_REGISTRY_URL_CONFIG;
 
-public record AvroRambler(Config config) implements SchemaRambler<Object> {
+public final class AvroRambler implements SchemaRambler<Object> {
+
+    private final Config config;
+
+    public AvroRambler(Config config) {
+        this.config = config;
+    }
 
     @Override
     public Optional<SchemaProps<Object>> mapSchemaToProps(String schemaString, boolean isKey) {

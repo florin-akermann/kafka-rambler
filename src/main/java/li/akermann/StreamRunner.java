@@ -34,4 +34,5 @@ public record StreamRunner<K, V>(SchemaProps<K> keySchemaProps, SchemaProps<V> v
                 valSchemaProps.randomGenerator().next()
         );
     }
+
 }

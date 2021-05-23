@@ -13,9 +13,19 @@ import org.apache.kafka.clients.producer.ProducerRecord;
 import java.util.concurrent.CompletionStage;
 
 @Slf4j
-public record StreamRunner<K, V>(SchemaProps<K> keySchemaProps, SchemaProps<V> valSchemaProps, Config config) {
+public class StreamRunner<K, V> {
 
-    public CompletionStage<Done> run(ActorSystem system) {
+    private final SchemaProps<K> keySchemaProps;
+    private final SchemaProps<V> valSchemaProps;
+    private final Config config;
+
+    public StreamRunner(SchemaProps<K> keySchemaProps, SchemaProps<V> valSchemaProps, Config config) {
+        this.keySchemaProps = keySchemaProps;
+        this.valSchemaProps = valSchemaProps;
+        this.config = config;
+    }
+
+    CompletionStage<Done> run(ActorSystem system) {
         return Source.repeat(1)
                 .map(e -> toRandomProducerRecord())
                 .throttle(config.getInt("ramble.elements"), config.getDuration("ramble.duration"))

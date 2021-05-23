@@ -6,6 +6,7 @@ import com.typesafe.config.ConfigFactory;
 import li.akermann.schema.rambler.AvroRambler;
 import li.akermann.schema.rambler.DefaultRambler;
 import li.akermann.schema.rambler.SchemaRambler;
+import li.akermann.schema.rambler.XsdRambler;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
@@ -34,6 +35,7 @@ public class KafkaRambler {
     private List<SchemaRambler<Object>> initSchemaRamblers() {
         return List.of(
                 new AvroRambler(config),
+                new XsdRambler(config),
                 new DefaultRambler(config) // should be the last in the list as a fallback
         );
     }
